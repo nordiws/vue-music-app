@@ -21,6 +21,13 @@
       >
         <h5>Drop your files here</h5>
       </div>
+      <label for="file">
+        <input
+          type="file"
+          multiple
+          @change="upload($event)"
+        >
+      </label>
       <hr class="my-6">
       <!-- Progress Bars -->
       <div
@@ -59,11 +66,17 @@ export default {
       uploads: [],
     };
   },
+  props: {
+    addSong: {
+      type: Function,
+      required: true,
+    },
+  },
   methods: {
     upload($event) {
       const { uid, displayName } = auth.currentUser;
       this.is_dragover = false;
-      const files = [...$event.dataTransfer.files];
+      const files = $event.dataTransfer ? [...$event.dataTransfer.files] : [...$event.target.files];
       files.forEach((file) => {
         if (file.type === 'audio/mpeg') {
           const storageRef = storage.ref();
@@ -94,13 +107,15 @@ export default {
                 uid,
                 display_name: displayName,
                 original_name: task.snapshot.ref.name,
-                modified_name: task.snapshot.ref.name,
+                modified_name: task.snapshot.ref.name.split('.')[0],
                 genre: '',
                 comment_count: 0,
                 url: '',
               };
               song.url = await task.snapshot.ref.getDownloadURL();
-              await songsCollection.add(song);
+              const songDbRef = await songsCollection.add(song);
+              const songSnapshot = await songDbRef.get();
+              this.addSong(songSnapshot);
               this.uploads[uploadIndex].variant = 'bg-green-400';
               this.uploads[uploadIndex].icon = 'fas fa-check';
               this.uploads[uploadIndex].text_class = 'text-green-400';
@@ -108,6 +123,9 @@ export default {
           );
         }
       });
+    },
+    cancelUploads() {
+      this.uploads.forEach((song) => song.task.cancel());
     },
   },
 };

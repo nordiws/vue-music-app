@@ -3,7 +3,10 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <app-upload />
+        <app-upload
+          ref="upload"
+          :add-song="addSong"
+        />
       </div>
       <div class="col-span-2">
         <div class="bg-white rounded border border-gray-200 relative flex flex-col">
@@ -12,115 +15,19 @@
             <i class="fa fa-compact-disc float-right text-green-400 text-2xl" />
           </div>
           <div class="p-6">
-            <!-- Composition Items -->
-            <div class="border border-gray-200 p-3 mb-4 rounded">
-              <div>
-                <h4 class="inline-block text-2xl font-bold">
-                  Song Name
-                </h4>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-                  <i class="fa fa-times" />
-                </button>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-                  <i class="fa fa-pencil-alt" />
-                </button>
-              </div>
-              <div>
-                <form>
-                  <div class="mb-3">
-                    <label
-                      class="inline-block mb-2"
-                      for="song-title"
-                    >
-                      Song Title
-                      <input
-                        type="text"
-                        class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300
-                        transition duration-500 focus:outline-none focus:border-black rounded"
-                        placeholder="Enter Song Title"
-                      >
-                    </label>
-                  </div>
-                  <div class="mb-3">
-                    <label
-                      class="inline-block mb-2"
-                      for="genre"
-                    >
-                      Genre
-                      <input
-                        type="text"
-                        class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300
-                          transition duration-500 focus:outline-none focus:border-black rounded"
-                        placeholder="Enter Genre"
-                      >
-                    </label>
-                  </div>
-                  <button
-                    type="submit"
-                    class="py-1.5 px-3 rounded text-white bg-green-600"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    type="button"
-                    class="py-1.5 px-3 rounded text-white bg-gray-600"
-                  >
-                    Go Back
-                  </button>
-                </form>
-              </div>
+            <div v-if="songs.length > 0">
+              <composition-item
+                v-for="(song, index) in songs"
+                :key="song.docID"
+                :song="song"
+                :index="index"
+                :update-song="updateSong"
+                :delete-song="deleteSong"
+                :update-unsaved-flag="updateUnsavedFlag"
+              />
             </div>
-            <div class="border border-gray-200 p-3 mb-4 rounded">
-              <div>
-                <h4 class="inline-block text-2xl font-bold">
-                  Song Name
-                </h4>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-                  <i class="fa fa-times" />
-                </button>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-                  <i class="fa fa-pencil-alt" />
-                </button>
-              </div>
-            </div>
-            <div class="border border-gray-200 p-3 mb-4 rounded">
-              <div>
-                <h4 class="inline-block text-2xl font-bold">
-                  Song Name
-                </h4>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-                  <i class="fa fa-times" />
-                </button>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-                  <i class="fa fa-pencil-alt" />
-                </button>
-              </div>
-            </div>
-            <div class="border border-gray-200 p-3 mb-4 rounded">
-              <div>
-                <h4 class="inline-block text-2xl font-bold">
-                  Song Name
-                </h4>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-                  <i class="fa fa-times" />
-                </button>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-                  <i class="fa fa-pencil-alt" />
-                </button>
-              </div>
-            </div>
-            <div class="border border-gray-200 p-3 mb-4 rounded">
-              <div>
-                <h4 class="inline-block text-2xl font-bold">
-                  Song Name
-                </h4>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-                  <i class="fa fa-times" />
-                </button>
-                <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-                  <i class="fa fa-pencil-alt" />
-                </button>
-              </div>
+            <div v-else>
+              <h3>No songs to show. Start by uploading some song on the left panel.</h3>
             </div>
           </div>
         </div>
@@ -131,11 +38,55 @@
 
 <script>
 import AppUpload from '@/components/AppUpload.vue';
+import { songsCollection, auth } from '@/includes/firebase.config';
+import CompositionItem from '@/components/CompositionItem.vue';
 
 export default {
   name: 'ManageView',
+  data() {
+    return {
+      songs: [],
+      unsavedFlag: false,
+    };
+  },
   components: {
     AppUpload,
+    CompositionItem,
+  },
+  methods: {
+    updateUnsavedFlag(value) {
+      this.unsavedFlag = value;
+    },
+    updateSong(index, values) {
+      this.songs[index].modified_name = values.modified_name;
+      this.songs[index].genre = values.genre;
+      this.songs[index].display_name = values.display_name;
+    },
+    deleteSong(index) {
+      this.songs.splice(index, 1);
+    },
+    addSong(document) {
+      const song = {
+        docID: document.id,
+        ...document.data(),
+      };
+      this.songs.push(song);
+    },
+  },
+  // Life Cycle methods
+  async created() {
+    const snapShot = await songsCollection.where('uid', '==', auth.currentUser.uid).get();
+    snapShot.forEach(this.addSong);
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$refs.upload.cancelUploads();
+    if (!this.unsavedFlag) {
+      next();
+    } else {
+      // eslint-disable-next-line no-restricted-globals, no-alert
+      const leave = confirm('You have unsaved changes. Are you sure you want to leave?');
+      next(leave);
+    }
   },
 };
 </script>
