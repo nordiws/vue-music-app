@@ -11,7 +11,7 @@
         exact-active-class="no-active"
         :to="{ name: 'home' }"
       >
-        Music
+        Your Music
       </router-link>
 
       <div class="flex flex-grow items-center">

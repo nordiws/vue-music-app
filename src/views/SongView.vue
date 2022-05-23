@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <!-- Music Header -->
     <section class="w-full mb-8 py-14 text-center text-white relative">
       <div
@@ -12,8 +12,12 @@
           type="button"
           class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full
           focus:outline-none"
+          @click.prevent="newSong(song)"
         >
-          <i class="fas fa-play" />
+          <i
+            class="fas  text-4xl"
+            :class="{'fa-play': !playing, 'fa-pause': playing}"
+          />
         </button>
         <div class="z-50 text-left ml-8">
           <!-- Song Info -->
@@ -25,7 +29,10 @@
       </div>
     </section>
     <!-- Form -->
-    <section class="container mx-auto mt-6">
+    <section
+      class="container mx-auto mt-6"
+      id="comments"
+    >
       <div class="bg-white rounded border border-gray-200 relative flex flex-col">
         <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
           <!-- Comment Count -->
@@ -101,12 +108,12 @@
         </p>
       </li>
     </ul>
-  </div>
+  </main>
 </template>
 
 <script>
 import { songsCollection, auth, commentsCollection } from '@/includes/firebase.config';
-import { mapState } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'SongView',
@@ -126,6 +133,7 @@ export default {
   },
   computed: {
     ...mapState(['userLoggedIn']),
+    ...mapGetters(['playing']),
     sortedComments() {
       return this.comments.slice().sort((a, b) => {
         if (this.sort === '1') {
@@ -136,6 +144,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['newSong']),
     async addComment(values, { resetForm }) {
       this.commentInSubmission = true;
       this.commentShowAlert = true;
@@ -148,11 +157,17 @@ export default {
         name: auth.currentUser.displayName,
         uid: auth.currentUser.uid,
       };
-      await commentsCollection.add(comment);
-      this.song.comment_count += 1;
-      await this.songsCollection.doc(this.$route.params.id).update({
-        comment_count: this.song.comment_count,
-      });
+
+      try {
+        await commentsCollection.add(comment);
+        this.song.comment_count += 1;
+        await songsCollection.doc(this.$route.params.id).update({
+          comment_count: this.song.comment_count,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
       this.getComments();
       this.commentInSubmission = false;
       this.commentAlertVariant = 'bg-green-500';
