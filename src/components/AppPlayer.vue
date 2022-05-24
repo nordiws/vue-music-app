@@ -67,7 +67,12 @@ export default {
   name: 'AppPlayer',
   computed: {
     ...mapGetters(['playing']),
-    ...mapState(['duration', 'seek', 'playerProgress', 'currentSong']),
+    ...mapState({
+      duration: (state) => state.player.duration,
+      seek: (state) => state.player.seek,
+      playerProgress: (state) => state.player.playerProgress,
+      currentSong: (state) => state.player.currentSong,
+    }),
   },
   methods: {
     ...mapActions(['toggleAudio', 'updateSeek']),
