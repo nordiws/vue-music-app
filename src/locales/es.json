@@ -1,0 +1,29 @@
+{
+  "header": {
+    "about": "Nosotros",
+    "logout": "Salir",
+    "manage": "Administrar",
+    "register": "Entrar / Registrar",
+    "title": "Su Música"
+  },
+  "home": {
+    "description": "Suba, comparta, escuche y disfrute con su propia música.",
+    "songs": "Músicas",
+    "title": "Escuche Su Música!"
+  },
+  "manage": {
+    "my_songs": "Mi Música",
+    "no_songs": "No hay ninguna música. Empiece por subir algunas musicas en el lado izquierdo."
+  },
+  "register": {
+    "accept": "Acepto los {0}",
+    "tos": " Términos de Servicio"
+  },
+  "song": {
+    "comment_count": "Sin Comentários | 1 Comentário | {count} Comentários"
+  },
+  "upload": {
+    "drop_files": "Suelte sus archivos aqui.",
+    "title": "Subir"
+  }
+}

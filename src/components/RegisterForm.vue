@@ -202,7 +202,13 @@
     </div>
     <!-- TOS -->
     <div class="mb-3 pl-6">
-      <span class="inline-block">Accept terms of service</span>
+      <i18n-t
+        class="inline-block"
+        keypath="register.accept"
+        tag="label"
+      >
+        <a href="">{{ $t('register.tos') }}</a>
+      </i18n-t>
       <vee-field
         name="tos"
         value="1"

@@ -11,7 +11,7 @@
       <div class="col-span-2">
         <div class="bg-white rounded border border-gray-200 relative flex flex-col">
           <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
-            <span class="card-title">My Songs</span>
+            <span class="card-title">{{ $t('manage.my_songs') }}</span>
             <i class="fa fa-compact-disc float-right text-green-400 text-2xl" />
           </div>
           <div class="p-6">
@@ -27,7 +27,7 @@
               />
             </div>
             <div v-else>
-              <h3>No songs to show. Start by uploading some song on the left panel.</h3>
+              <h3>{{ $t('manage.no_songs') }}</h3>
             </div>
           </div>
         </div>

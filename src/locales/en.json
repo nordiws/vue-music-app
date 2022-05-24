@@ -1,0 +1,29 @@
+{
+  "header": {
+    "about": "About",
+    "logout": "Logout",
+    "manage": "Manage",
+    "register": "Login / Register",
+    "title": "Your Music"
+  },
+  "home": {
+    "description": "Upload, share, listen to and party with your own music.",
+    "songs": "Songs",
+    "title": "Listen to Your Music!"
+  },
+  "manage": {
+    "my_songs": "My Songs",
+    "no_songs": "No songs to show. Start by uploading some song on the left panel."
+  },
+  "register": {
+    "accept": "I accept Music's {0}",
+    "tos": "Terms of Services"
+  },
+  "song": {
+    "comment_count": "No comments | 1 Comment | {count} Comments"
+  },
+  "upload": {
+    "drop_files": "Drop your files here",
+    "title": "Upload"
+  }
+}

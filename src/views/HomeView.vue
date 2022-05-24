@@ -8,11 +8,12 @@
       />
       <div class="container mx-auto">
         <div class="text-white main-header-content">
+          <!-- Introduction Header -->
           <h1 class="font-bold text-5xl mb-5">
-            Listen to Your Great Music!
+            {{ $t('home.title') }}
           </h1>
           <p class="w-full md:w-8/12 mx-auto">
-            Upload, share, listen to and party with your own music.
+            {{ $t('home.description') }}
           </p>
         </div>
       </div>
@@ -31,9 +32,9 @@
         <!-- Icon -->
         <div
           class="px-6 pt-6 pb-5 font-bold border-b border-gray-200"
-          v-icon-secondary="{icon: 'headphones-alt', right: true}"
+          v-icon-secondary="{ icon: 'headphones-alt', right: true }"
         >
-          <span class="card-title">Songs</span>
+          <span class="card-title">{{ $t('home.songs') }}</span>
         </div>
         <!-- Playlist -->
         <ol id="playlist">
