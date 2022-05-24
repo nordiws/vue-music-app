@@ -18,11 +18,15 @@
 
 <script>
 import AppBanner from '@/components/AppBanner.vue';
+import dummyModule from '@/store/modules/dummy';
 
 export default {
   name: 'AboutView',
   components: {
     AppBanner,
+  },
+  created() {
+    this.$store.registerModule('dummy', dummyModule);
   },
 };
 </script>

@@ -165,15 +165,11 @@ export default {
         uid: auth.currentUser.uid,
       };
 
-      try {
-        await commentsCollection.add(comment);
-        this.song.comment_count += 1;
-        await songsCollection.doc(this.$route.params.id).update({
-          comment_count: this.song.comment_count,
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      await commentsCollection.add(comment);
+      this.song.comment_count += 1;
+      await songsCollection.doc(this.$route.params.id).update({
+        comment_count: this.song.comment_count,
+      });
 
       this.getComments();
       this.commentInSubmission = false;
@@ -204,16 +200,20 @@ export default {
     },
   },
   // Life Cycle methods
-  async created() {
-    const documentSnapshot = await songsCollection.doc(this.$route.params.id).get();
-    if (!documentSnapshot.exists) {
-      this.$router.push({ name: 'home' });
-      return;
-    }
-    const { sort } = this.$route.query;
-    this.sort = sort === '1' || sort === '2' ? sort : '1';
-    this.song = documentSnapshot.data();
-    this.getComments();
+  async beforeRouteEnter(to, from, next) {
+    const documentSnapshot = await songsCollection.doc(to.params.id).get();
+    next((vm) => {
+      if (!documentSnapshot.exists) {
+        vm.$router.push({ name: 'home' });
+        return;
+      }
+      const { sort } = vm.$route.query;
+      // eslint-disable-next-line no-param-reassign
+      vm.sort = sort === '1' || sort === '2' ? sort : '1';
+      // eslint-disable-next-line no-param-reassign
+      vm.song = documentSnapshot.data();
+      vm.getComments();
+    });
   },
 };
 </script>
