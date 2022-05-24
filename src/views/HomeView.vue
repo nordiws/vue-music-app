@@ -1,29 +1,6 @@
 <template>
   <main>
-    <!-- Introduction -->
-    <section class="mb-8 py-20 text-white text-center relative">
-      <div
-        class="absolute inset-0 w-full h-full bg-contain introduction-bg"
-        style="background-image: url(assets/img/header.png)"
-      />
-      <div class="container mx-auto">
-        <div class="text-white main-header-content">
-          <!-- Introduction Header -->
-          <h1 class="font-bold text-5xl mb-5">
-            {{ $t('home.title') }}
-          </h1>
-          <p class="w-full md:w-8/12 mx-auto">
-            {{ $t('home.description') }}
-          </p>
-        </div>
-      </div>
-      <img
-        alt=""
-        class="relative block mx-auto mt-5 -mb-20 w-auto max-w-full"
-        src="assets/img/introduction-music.png"
-      >
-    </section>
-
+    <app-banner />
     <!-- Main Content -->
     <section class="container mx-auto">
       <div
@@ -32,18 +9,18 @@
         <!-- Icon -->
         <div
           class="px-6 pt-6 pb-5 font-bold border-b border-gray-200"
-          v-icon-secondary="{ icon: 'headphones-alt', right: true }"
         >
           <span class="card-title">{{ $t('home.songs') }}</span>
+          <span v-icon-secondary="{ icon: 'headphones-alt', right: true }" />
         </div>
         <!-- Playlist -->
-        <ol id="playlist">
+        <ul id="playlist">
           <app-song-item
             v-for="song in songs"
             :key="song.docID"
             :song="song"
           />
-        </ol>
+        </ul>
         <!-- .. end Playlist -->
       </div>
     </section>
@@ -54,6 +31,7 @@
 import { songsCollection } from '@/includes/firebase.config';
 import AppSongItem from '@/components/SongItem.vue';
 import IconSecondary from '@/directives/icon-secondary';
+import AppBanner from '@/components/AppBanner.vue';
 
 export default {
   name: 'HomeView',
@@ -66,6 +44,7 @@ export default {
   },
   components: {
     AppSongItem,
+    AppBanner,
   },
   directives: {
     'icon-secondary': IconSecondary,

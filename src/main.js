@@ -8,6 +8,7 @@ import VeeValidatePlugin from './includes/validation';
 import { auth } from './includes/firebase.config';
 import App from './App.vue';
 import i18n from './includes/i18n';
+import './registerServiceWorker';
 
 let app;
 
